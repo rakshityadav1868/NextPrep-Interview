@@ -1,42 +1,194 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* General Styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Header */
+.App-header {
+  background-color: #ffffff;
+  padding: 2rem 1rem;
+  border-bottom: 1px solid #eaeaea;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.App-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
 }
 
-.card {
-  padding: 2em;
+.App-header p {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  color: #555555;
 }
 
-.read-the-docs {
-  color: #888;
+/* Input Section */
+.input-section {
+  margin-bottom: 2rem;
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  resize: vertical;
+  background-color: #f9f9f9;
+  color: #000000;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Loader */
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #000000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Results Section */
+.results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.skills-container, .questions-container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #000000;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Skills Table */
+.skills-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.skills-table th, .skills-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.skills-table th {
+  background-color: #f9f9f9;
+  font-weight: 600;
+  text-align: left;
+}
+
+.skills-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Question Card */
+.question-card {
+  background-color: #f9f9f9;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.question-meta {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4em 0.8em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.badge.difficulty {
+  background-color: #e7e7e7;
+  color: #333;
+}
+
+.badge.category {
+  background-color: #d1e7dd;
+  color: #0f5132;
 }
