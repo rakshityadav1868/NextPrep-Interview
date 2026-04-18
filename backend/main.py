@@ -84,5 +84,4 @@ async def analyze(job_desc: str=Form(...)):
 
     return {
         "skills": df.to_dict(orient="records"), #df.to_dict(orient="records") table ko dic vps jisse react easily use kr ske
-        "question": questions["questions"]
     }
