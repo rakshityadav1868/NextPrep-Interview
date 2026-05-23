@@ -2,7 +2,6 @@ from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 import spacy
 import pandas as pd
-from transformers import pipeline
 import google.generativeai as genai
 import os
 import json
@@ -20,35 +19,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# now lets load the model we will use
-nlp=spacy.load("en_core_web_sm")
-classifier=pipeline("zero-shot-classification")
+# Load spaCy model
+nlp = spacy.load("en_core_web_sm")
+
+# Configure Gemini
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
-
-# wirting spacy function
+# Extract keywords using spaCy
 def extract_keywords(text):
-    doc=nlp(text)
-    keywords=[]
+    doc = nlp(text)
+    keywords = []
+
     for token in doc:
         if not token.is_stop and not token.is_punct:
-            if token.pos_ in ["NOUN","PROPN"]:
+            if token.pos_ in ["NOUN", "PROPN"]:
                 keywords.append(token.text)
-    return keywords
 
-#hugging face function
+    return list(set(keywords))
+
+
+# Simple skill categorization
 def categorize_skill(skill):
-    labels=["Technical","Soft skill","Domain"]
-    result=classifier(skill,labels)
-    return result["labels"][0]
+    technical_keywords = [
+        "python", "react", "docker", "kubernetes",
+        "aws", "api", "javascript", "node",
+        "sql", "mongodb", "git", "linux"
+    ]
 
-# gemini function
+    if skill.lower() in technical_keywords:
+        return "Technical"
+
+    return "Domain"
+
+
+# Generate interview questions using Gemini
 def generate_question(keywords):
-    prompt=f"""
+
+    prompt = f"""
     Given these job skills: {keywords}
+
     Generate 10 interview questions in JSON format:
+
     {{
         "questions": [
             {{
@@ -58,31 +71,46 @@ def generate_question(keywords):
             }}
         ]
     }}
-    Return ONLY JSON, nothing else.
+
+    Return ONLY JSON.
     """
+
     response = model.generate_content(prompt)
-    text = response.text.strip().strip("```json").strip("```").strip()
+
+    text = (
+        response.text
+        .strip()
+        .replace("```json", "")
+        .replace("```", "")
+        .strip()
+    )
+
     if text:
         return json.loads(text)
+
     return []
 
+
 @app.post("/analyze")
-async def analyze(job_desc: str=Form(...)):
+async def analyze(job_desc: str = Form(...)):
 
-    #spacy
-    keywords=extract_keywords(job_desc)
-    #hugging face
-    categorized=[]
-    for i in keywords:
-        category = categorize_skill(i)
-        categorized.append({"skill": i, "category":category})
-    #organize by pandas
-    df= pd.DataFrame(categorized)
+    keywords = extract_keywords(job_desc)
 
-    #gemini se question
-    questions=generate_question(keywords)
+    categorized = []
+
+    for skill in keywords:
+        categorized.append({
+            "skill": skill,
+            "category": categorize_skill(skill)
+        })
+
+    df = pd.DataFrame(categorized)
+
+    questions = generate_question(keywords)
 
     return {
         "skills": df.to_dict(orient="records"),
-        "questions": questions.get("questions", []) if isinstance(questions, dict) else [],
+        "questions": questions.get("questions", [])
+        if isinstance(questions, dict)
+        else [],
     }
