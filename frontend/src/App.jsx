@@ -23,8 +23,10 @@ function App() {
     const formdata = new FormData();
     formdata.append("job_desc", jobsDesc);
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
     try {
-      const response = await axios.post("http://localhost:8000/analyze", formdata, { timeout: 60000 });
+      const response = await axios.post(`${API_URL}/analyze`, formdata, { timeout: 60000 });
       setSkills(response.data.skills || []);
       setQuestions(response.data.questions || []);
     } catch (err) {
